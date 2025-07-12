@@ -1,0 +1,68 @@
+-- WestHub MAIN - SGTF:AF (UI Obsidian)
+-- Requiere: https://github.com/deividcomsono/Obsidian/tree/main
+
+local Obsidian = loadstring(game:HttpGet("https://raw.githubusercontent.com/ObsidianUI/Obsidian/main/main.lua"))()
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
+
+-- 🪐 Crear ventana
+Obsidian:Window("WestHub | SGTF:AF")
+
+-- 📁 Tab 1: Beerus
+Obsidian:Tab("Beerus")
+
+Obsidian:Button("🌀 TP a Beerus", function()
+    local beerus = Workspace:FindFirstChild("Beerus")
+    if beerus and beerus:FindFirstChild("HumanoidRootPart") then
+        LocalPlayer.Character.HumanoidRootPart.CFrame = beerus.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+    end
+end)
+
+Obsidian:Button("👁️ Verificar si está Beerus", function()
+    if Workspace:FindFirstChild("Beerus") then
+        Obsidian:Notify("✅ Beerus está presente en el mapa.")
+    else
+        Obsidian:Notify("❌ Beerus no está en este server.")
+    end
+end)
+
+-- 📁 Tab 2: Farm / Esquivar
+Obsidian:Tab("Farm / Esquivar")
+
+local esquivar = false
+local detectionDist = 15
+
+Obsidian:Toggle("Auto-esquivar ataques (PvP)", false, function(val)
+    esquivar = val
+end)
+
+Obsidian:Slider("Distancia de detección", 5, 50, 15, function(val)
+    detectionDist = val
+end)
+
+RunService.RenderStepped:Connect(function()
+    if esquivar then
+        for _, p in ipairs(Players:GetPlayers()) do
+            if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                local mag = (LocalPlayer.Character.HumanoidRootPart.Position - p.Character.HumanoidRootPart.Position).Magnitude
+                if mag < detectionDist then
+                    LocalPlayer.Character.HumanoidRootPart.CFrame += Vector3.new(math.random(-10, 10), 0, math.random(-10, 10))
+                end
+            end
+        end
+    end
+end)
+
+-- 📁 Tab 3: Info
+Obsidian:Tab("Info")
+
+Obsidian:Button("📎 Copiar Discord Oficial", function()
+    setclipboard("https://discord.gg/yDApaAPv")
+    Obsidian:Notify("Link de Discord copiado al portapapeles.")
+end)
+
+Obsidian:Button("🔧 Soon...", function()
+    Obsidian:Notify("Este botón tendrá una función futura.")
+end)
